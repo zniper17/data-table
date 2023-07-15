@@ -1,15 +1,25 @@
+import { IRowData } from "@/types";
+import Link from "next/link";
 import React from "react";
 
 interface IProps {
   sortable?: boolean;
   headers: string[];
   caption?: string;
-  rows: any;
+  rows: IRowData[];
   pagination?: boolean;
+  currentPage: number;
+  totalPages: number;
 }
 
 function DataTable(props: IProps) {
-  console.log("---------props", props.sortable);
+  let pageNumbers = [];
+
+  for (let i = props.currentPage - 3; i <= props.currentPage + 3; i++) {
+    if (i < 1) continue;
+    if (i > props.totalPages) break;
+    pageNumbers.push(i);
+  }
 
   return (
     <React.Fragment>
@@ -40,9 +50,18 @@ function DataTable(props: IProps) {
             </tr>
           </thead>
           <tbody>
-            {/* {props.rows.map((row) => {
-
-            } )} */}
+            {props.rows.map((row) => (
+              <tr
+                key={row.name}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+              >
+                {Object.values(row).map((cell, cellIndex) => (
+                  <td key={cellIndex} className="px-6 py-4">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
         <nav
@@ -56,29 +75,34 @@ function DataTable(props: IProps) {
             <span className="font-semibold text-gray-400 mx-2">1000</span>
           </span>
           <ul className="inline-flex -space-x-px text-sm h-8">
+            {props.currentPage - 1 >= 1 && (
+              <li>
+                <Link href={`/examples?page_num=${props.currentPage - 1}`}>
+                  <span className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    Previous
+                  </span>
+                </Link>
+              </li>
+            )}
+            {pageNumbers.map((page) => (
+              <Link key={page} href={`/examples?page_num=${page}`}>
+                <span
+                  className={`flex items-center justify-center px-3 h-8 leading-tight  bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                    page === props.currentPage
+                      ? "!text-blue-500"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {page}
+                </span>
+              </Link>
+            ))}
             <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                Previous
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                1
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                Next
-              </a>
+              <Link href={`/examples?page_num=${props.currentPage + 1}`}>
+                <span className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                  Next
+                </span>
+              </Link>
             </li>
           </ul>
         </nav>
