@@ -1,9 +1,7 @@
 export interface IRowData {
-  timestamp: string;
-  purchaseId: string;
-  mail: string;
-  name: string;
-  source: string;
-  status: string;
-  select: string;
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  avatar: string;
 }
