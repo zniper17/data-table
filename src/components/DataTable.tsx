@@ -3,6 +3,7 @@
 import { IRowData } from "@/types";
 import Link from "next/link";
 import React from "react";
+import Button from "./Button";
 
 interface IProps {
   sortable?: boolean;
@@ -10,40 +11,13 @@ interface IProps {
   caption?: string;
   rows: IRowData[];
   pagination?: boolean;
+  paginationHandler: (page: number) => void;
   currentPage: number;
+  changeSort(key: keyof IRowData): void;
   pageArray: number[];
 }
 
 function DataTable(props: IProps) {
-  const [sortKey, setSortKey] = React.useState<keyof IRowData | "">("");
-  const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">(
-    "asc"
-  );
-  const handleSort = (key: keyof IRowData) => {
-    if (props.sortable) {
-      if (key === sortKey) {
-        setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-      } else {
-        setSortKey(key);
-        setSortDirection("asc");
-      }
-    }
-  };
-
-  const sortedRows = React.useMemo(() => {
-    if (!sortKey) return props.rows;
-
-    const sorted = [...props.rows].sort((a, b) => {
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
-      if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
-      if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    return sorted;
-  }, [props.rows, sortKey, sortDirection]);
-
   return (
     <React.Fragment>
       {!!props.caption && <span>{props.caption}</span>}
@@ -51,23 +25,17 @@ function DataTable(props: IProps) {
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              {props.headers.map((header: any) => (
-                <th key={header} className="px-6 py-3">
+              {props.headers.map((header: any, index) => (
+                <th key={index} className="px-6 py-3">
                   <div className="flex items-center">
                     <span>{header}</span>
                     {props.sortable && (
                       <button
-                        onClick={() => handleSort(header)}
+                        onClick={() => props.changeSort(header)}
                         className="ml-1.5 focus:outline-none"
                       >
                         <svg
-                          className={`w-3 h-3 transition-transform duration-150 transform ${
-                            sortKey === header
-                              ? sortDirection === "asc"
-                                ? "rotate-180"
-                                : ""
-                              : "rotate-0"
-                          }`}
+                          className={`w-3 h-3 transition-transform duration-150 transform`}
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="currentColor"
@@ -83,7 +51,7 @@ function DataTable(props: IProps) {
             </tr>
           </thead>
           <tbody>
-            {sortedRows.map((row) => (
+            {props.rows.map((row) => (
               <tr
                 key={row.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -105,32 +73,36 @@ function DataTable(props: IProps) {
             <ul className="inline-flex -space-x-px text-sm h-8">
               {props.currentPage - 1 >= 1 && (
                 <li>
-                  <Link href={`/examples?page_num=${props.currentPage - 1}`}>
-                    <span className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                      Previous
-                    </span>
-                  </Link>
+                  <Button
+                    onClick={() => {
+                      props.paginationHandler(props.currentPage - 1);
+                    }}
+                  >
+                    Previous
+                  </Button>
                 </li>
               )}
               {props.pageArray.map((page) => (
-                <Link key={page} href={`/examples?page_num=${page}`}>
-                  <span
-                    className={`flex items-center justify-center px-3 h-8 leading-tight  bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
-                      page === props.currentPage
-                        ? "!text-blue-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {page}
-                  </span>
-                </Link>
+                <Button
+                  key={page}
+                  onClick={() => props.paginationHandler(page)}
+                  className={`${
+                    page === props.currentPage
+                      ? "!text-blue-500"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {page}
+                </Button>
               ))}
               <li>
-                <Link href={`/examples?page_num=${props.currentPage + 1}`}>
-                  <span className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    Next
-                  </span>
-                </Link>
+                <Button
+                  onClick={() => {
+                    props.paginationHandler(props.currentPage + 1);
+                  }}
+                >
+                  Next
+                </Button>
               </li>
             </ul>
           </nav>
