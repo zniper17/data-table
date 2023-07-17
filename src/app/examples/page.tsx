@@ -32,15 +32,16 @@ async function Home({ searchParams }: IProps) {
 
     return (
       <>
-        <DataTable
+        {/* <DataTable
           sortable
           caption="Bookings"
           headers={headers}
           rows={users}
           pagination
-          pageArray={pageArray}
+          // pageArray={pageArray}
           currentPage={currentPage}
-        />
+        /> */}
+        <h1>Removed server side component</h1>
       </>
     );
   } catch (error) {
