@@ -20,7 +20,11 @@ function Home() {
               <h2 className="my-3 pb-8 text-xl">Data Table Example</h2>
 
               <div className="flex gap-4 mb-4">
-                <Anchor target="_blank" rel="noreferrer">
+                <Anchor
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://github.com/zniper17/data-table/blob/main/src/components/DataTable.tsx"
+                >
                   Github
                 </Anchor>
                 <Anchor

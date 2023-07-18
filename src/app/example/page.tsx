@@ -29,10 +29,12 @@ function Example({ searchParams }: IProps) {
     ? 1
     : Number(searchParams.page_num);
 
+  // Fetch data based on the current page number
   React.useEffect(() => {
     fetchData(currentPage);
   }, [searchParams.page_num]);
 
+  // Fetch data from the API
   const fetchData = async (page: number) => {
     try {
       const response = await getUsers(page);
@@ -42,23 +44,31 @@ function Example({ searchParams }: IProps) {
     }
   };
 
+  // Handle pagination page changes
   const paginationHandler = (page: number) => {
     router.push(`${pathname}?page_num=${page}`);
   };
 
+  // Sorting function
   const sortedData = React.useCallback(() => {
     return sortData(paginatedData?.data, sortKey, sortDirection === "desc");
   }, [sortDirection, sortKey, paginatedData]);
 
+  // Handle sorting change
   function changeSort(key: keyof IRowData) {
     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     setSortKey(key);
   }
 
+  // Show loading state if data is not available yet
   if (!paginatedData) {
-    return <div>Loading</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gray-900"></div>
+      </div>
+    );
   }
-
+  // Generate the array of page numbers for pagination
   const pageArray = Array(paginatedData.total_pages)
     .fill(1)
     .map((_, index) => index + 1);
