@@ -1,11 +1,9 @@
 "use client";
-
 import { IRowData } from "@/types";
-import Link from "next/link";
 import React from "react";
 import Button from "./Button";
 
-interface IProps {
+interface DataTableProps {
   sortable?: boolean;
   headers: string[];
   caption?: string;
@@ -17,10 +15,10 @@ interface IProps {
   pageArray: number[];
 }
 
-function DataTable(props: IProps) {
+function DataTable(props: DataTableProps) {
   return (
     <React.Fragment>
-      {!!props.caption && <span>{props.caption}</span>}
+      {!!props.caption && <h1 className="text-3xl my-5">{props.caption}</h1>}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -35,7 +33,7 @@ function DataTable(props: IProps) {
                         className="ml-1.5 focus:outline-none"
                       >
                         <svg
-                          className={`w-3 h-3 transition-transform duration-150 transform`}
+                          className="w-3 h-3 transition-transform duration-150 transform"
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="currentColor"
@@ -95,15 +93,17 @@ function DataTable(props: IProps) {
                   {page}
                 </Button>
               ))}
-              <li>
-                <Button
-                  onClick={() => {
-                    props.paginationHandler(props.currentPage + 1);
-                  }}
-                >
-                  Next
-                </Button>
-              </li>
+              {props.currentPage !== props.pageArray.pop() && (
+                <li>
+                  <Button
+                    onClick={() => {
+                      props.paginationHandler(props.currentPage + 1);
+                    }}
+                  >
+                    Next
+                  </Button>
+                </li>
+              )}
             </ul>
           </nav>
         )}

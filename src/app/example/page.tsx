@@ -5,11 +5,11 @@ import DataTable from "@/components/DataTable";
 import { sortData } from "@/helpers";
 import { IRowData } from "@/types";
 import { useRouter } from "next/navigation";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import React from "react";
 
-const headers = ["Id", "first_name", "email"];
+const HEADERS = ["Id", "first_name", "email"];
 
 interface IProps {
   searchParams: {
@@ -17,15 +17,9 @@ interface IProps {
   };
 }
 
-function Home({ searchParams }: IProps) {
+function Example({ searchParams }: IProps) {
   const router = useRouter();
   const pathname = usePathname();
-
-  const [pagination, setPagination] = React.useState({
-    currentPage: 0,
-    totalPages: 0,
-  });
-
   const [paginatedData, setPaginatedData] = React.useState<any>();
   const [sortKey, setSortKey] = React.useState<keyof IRowData | "">("");
   const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">(
@@ -73,7 +67,7 @@ function Home({ searchParams }: IProps) {
     <DataTable
       sortable
       caption="Bookings"
-      headers={headers}
+      headers={HEADERS}
       rows={sortedData()}
       changeSort={changeSort}
       pagination
@@ -84,4 +78,4 @@ function Home({ searchParams }: IProps) {
   );
 }
 
-export default Home;
+export default Example;

@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const axiosPrimaryInstance = axios.create();
+const axiosInstance = axios.create();
 
-axiosPrimaryInstance.defaults.baseURL = "https://reqres.in/api";
+axiosInstance.defaults.baseURL = "https://reqres.in/api";
 
 export const getUsers = async (pageParam = 1) => {
-  const response = await axiosPrimaryInstance.get(`/users?page=${pageParam}`);
+  const response = await axiosInstance.get(`/users?page=${pageParam}`);
   return response.data;
 };
